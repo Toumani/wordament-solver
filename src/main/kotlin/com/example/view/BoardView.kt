@@ -1,5 +1,6 @@
 package com.example.view
 
+import com.example.model.Position
 import com.example.style.TileStyle
 import javafx.beans.property.SimpleStringProperty
 import javafx.event.EventHandler
@@ -9,42 +10,36 @@ import javafx.scene.layout.StackPane
 import javafx.scene.text.Text
 import tornadofx.*
 
+const val NB_ROWS = 4
+const val NB_COLS = 4
+
 class BoardView : View() {
+    val boardData = mutableListOf<MutableList<Tile>>()
+
     override val root = vbox {
         gridpane {
-            row {
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-            }
-            row {
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-            }
-            row {
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-            }
-            row {
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
-                add(find<Tile>().root)
+            for (i in 1..NB_ROWS) {
+                row {
+                    val row = mutableListOf<Tile>()
+                    for (j in 1..NB_COLS) {
+                        val tile = Tile(if ((i + j) % 2 == 0) "A" else "B")
+                        row += tile
+                        add(tile)
+                    }
+                    boardData += row
+                }
             }
             alignment = Pos.CENTER
         }
         alignment = Pos.CENTER
     }
+
+    fun getValue(position: Position) = boardData[position.y][position.x].getText()
 }
 
-class Tile : Fragment() {
-    val input = SimpleStringProperty("-")
-    val turnToEdit = EventHandler { event: MouseEvent -> root.children.setAll(textfield) }
+class Tile(value: String) : Fragment() {
+    val input = SimpleStringProperty(value)
+    val turnToEdit = EventHandler { _: MouseEvent -> root.children.setAll(textfield) }
     val tileText: Text = text(input) {
         addClass(TileStyle.tileText)
         onMouseClicked = turnToEdit
@@ -66,4 +61,5 @@ class Tile : Fragment() {
         addClass(TileStyle.tile)
     }
 
+    fun getText(): String = input.get()
 }
