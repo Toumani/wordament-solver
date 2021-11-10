@@ -16,14 +16,14 @@ class TileStyle: Stylesheet() {
 
     init {
         tile {
-            minWidth = 100.px
-            minHeight = 100.px
-            maxWidth = 100.px
-            maxHeight = 100.px
+            minWidth = 200.px
+            minHeight = 200.px
+            maxWidth = 200.px
+            maxHeight = 200.px
 
             backgroundColor = multi(tileBackgroundColor)
             borderWidth += box(1.px)
-            borderColor += box(c("#333"))
+            borderColor += box(c("#ccc"))
 
             tileText {
                 fontSize = tileFontSize
