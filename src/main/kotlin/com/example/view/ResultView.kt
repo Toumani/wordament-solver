@@ -4,39 +4,57 @@ import com.example.MyApp
 import com.example.model.Move
 import com.example.model.Path
 import com.example.model.Position
+import com.example.style.ResultStyle
+import javafx.geometry.Orientation
+import javafx.scene.control.ScrollPane
+import javafx.scene.layout.Priority
 import javafx.scene.text.Text
 import tornadofx.*
 
 class ResultView : View() {
     val controller: ResultController by inject()
-    val resultPane = flowpane { vgap = 40.0 }
+    val resultPane = flowpane { vgap = 40.0; prefWidth = 800.0 }
     override val root = vbox {
         button("Resolve!") {
+            addClass(ResultStyle.button)
             action { controller.resolve() }
         }
+        separator(Orientation.HORIZONTAL)
         label("Results:") {
             style {
                 fontSize = 28.px
+                textFill = c("#f2f2f2")
             }
         }
-        add(resultPane)
+        scrollpane {
+            add(resultPane)
+            hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+            vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
+            vgrow = Priority.ALWAYS
+            style { backgroundColor += ResultStyle.resultBackgroundColor }
+
+        }
         spacing = 20.0
         padding = insets(20)
         prefWidth = 800.0
+
+        style { backgroundColor += ResultStyle.resultBackgroundColor }
     }
 }
 
 class ResultController : Controller() {
     fun resolve() {
         println("Resolving!")
-//        for (i in WORD_MIN_LENGTH..WORD_MAX_LENGTH) {
-            val words = findWordsFromStartingPosition(Position(0, 0))
-//        }
+        val words = mutableSetOf<String>()
+        for (i in 0 until NB_ROWS)
+            for (j in 0 until NB_COLS)
+                words += findWordsFromStartingPosition(Position(j, i))
         val resultView = find<ResultView>()
         resultView.resultPane.clear()
-        for (word in words) {
+        for (word in words.sorted()) {
             val text = Text(word)
             text.wrappingWidth = 200.0
+            text.style { fill = c("#e6e6e6") }
             resultView.resultPane.add(text)
         }
     }
