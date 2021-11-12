@@ -15,9 +15,11 @@ class ResultView : View() {
     val controller: ResultController by inject()
     val resultPane = flowpane { vgap = 40.0; prefWidth = 800.0 }
     override val root = vbox {
-        button("Resolve!") {
-            addClass(ResultStyle.button)
-            action { controller.resolve() }
+        hbox {
+            button("Clear") { action { controller.clear() } }
+            button("Randomize") { action { controller.randomize() } }
+            button("Resolve!") { action { controller.resolve() } }
+            spacing = 20.0
         }
         separator(Orientation.HORIZONTAL)
         label("Results:") {
@@ -43,6 +45,16 @@ class ResultView : View() {
 }
 
 class ResultController : Controller() {
+    fun clear() {
+        val board = find<BoardView>()
+        board.clear()
+    }
+
+    fun randomize() {
+        val board = find<BoardView>()
+        board.randomize()
+    }
+
     fun resolve() {
         println("Resolving!")
         val words = mutableSetOf<String>()
