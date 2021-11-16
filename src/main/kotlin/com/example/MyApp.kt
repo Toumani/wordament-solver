@@ -3,15 +3,14 @@ package com.example
 import com.example.style.ResultStyle
 import com.example.style.TileStyle
 import com.example.view.MainView
+import javafx.scene.Scene
+import javafx.stage.Stage
 import tornadofx.App
+import tornadofx.FX
+import tornadofx.importStylesheet
 import tornadofx.reloadStylesheetsOnFocus
 
-class MyApp: App(
-    MainView::class,
-    Styles::class,
-    ResultStyle::class,
-    TileStyle::class
-) {
+class MyApp: App(MainView::class) {
     companion object {
         val dictionaryWords: List<String> = MyApp::class.java.getResource("/english-words.txt")?.readText()?.split("\n")!!
 
@@ -43,6 +42,16 @@ class MyApp: App(
             "J" to 0.1965,
             "Q" to 0.1962,
         )
+    }
+
+    override fun start(stage: Stage) {
+        val scene = Scene(MainView().root)
+        importStylesheet(Styles::class)
+        importStylesheet(ResultStyle::class)
+        importStylesheet(TileStyle::class)
+        FX.applyStylesheetsTo(scene)
+        stage.scene = scene
+        stage.show()
     }
 
     init {

@@ -8,17 +8,25 @@ data class Position(var x: Int, var y: Int) {
 
     fun get(move: Move) = when(move) {
         Move.RIGHT -> Position(x + 1, y)
+        Move.DOWN_RIGHT -> Position(x + 1, y + 1)
         Move.DOWN -> Position(x, y + 1)
+        Move.DOWN_LEFT -> Position(x - 1, y + 1)
         Move.LEFT -> Position(x - 1, y)
+        Move.UP_LEFT -> Position(x - 1, y - 1)
         Move.UP -> Position(x, y - 1)
+        Move.UP_RIGHT -> Position(x + 1, y - 1)
     }
 
     fun move(move: Move) {
         when(move) {
             Move.RIGHT -> x++
+            Move.DOWN_RIGHT -> { x++; y++ }
             Move.DOWN -> y++
+            Move.DOWN_LEFT -> { x--; y++}
             Move.LEFT -> x--
+            Move.UP_LEFT -> { x--; y-- }
             Move.UP -> y--
+            Move.UP_RIGHT -> { x++; y-- }
         }
     }
 

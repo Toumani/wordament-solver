@@ -85,7 +85,7 @@ class ResultController : Controller() {
 
             do {
                 var moved = false
-                for (move in listOf(Move.RIGHT, Move.DOWN, Move.LEFT, Move.UP)) {
+                for (move in listOf(Move.RIGHT, Move.DOWN_RIGHT, Move.DOWN, Move.DOWN_LEFT, Move.LEFT, Move.UP_LEFT, Move.UP, Move.UP_RIGHT)) {
                     val nextPosition = currentPosition.get(move)
                     val nextPath = currentPath.get(move)
                     // check if movement is valid

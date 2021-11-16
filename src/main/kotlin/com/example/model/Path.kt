@@ -7,8 +7,6 @@ data class Path(val moves: MutableList<Move>) {
 
     fun get(move: Move) = Path(moves.plus(move).toMutableList())
 
-    fun right() = Path(moves.plus(Move.RIGHT).toMutableList())
-
     fun add(move: Move) = moves.add(move)
 
     override fun equals(other: Any?): Boolean {
@@ -31,5 +29,5 @@ data class Path(val moves: MutableList<Move>) {
 }
 
 enum class Move {
-    UP, RIGHT, DOWN, LEFT
+    UP, RIGHT, DOWN, LEFT, UP_RIGHT, DOWN_RIGHT, DOWN_LEFT, UP_LEFT
 }

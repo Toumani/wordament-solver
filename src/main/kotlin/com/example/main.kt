@@ -1,7 +1,18 @@
 package com.example
 
-import tornadofx.launch
+import com.jpro.webapi.JProApplication
+import javafx.stage.Stage
 
-fun main() {
-    launch<MyApp>()
+class MainKt : JProApplication() {
+    val app = MyApp()
+
+    override fun start(primaryStage: Stage) {
+        app.start(primaryStage)
+    }
+
+    override fun stop() {
+        app.stop()
+        super.stop()
+    }
+
 }
