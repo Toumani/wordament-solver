@@ -1,16 +1,18 @@
-package com.example.model
+package com.kst.wordamentresolver.model
 
-data class Path(val moves: MutableList<Move>) {
+data class Path(val initialPosition: Position, val moves: MutableList<Move>) {
     val length
         get() = moves.size
-    constructor(vararg move: Move) : this(move.toMutableList())
+    constructor(initialPosition: Position, vararg move: Move) : this(initialPosition, move.toMutableList())
 
-    fun get(move: Move) = Path(moves.plus(move).toMutableList())
+    fun get(move: Move) = Path(initialPosition, moves.plus(move).toMutableList())
 
     fun add(move: Move) = moves.add(move)
 
     override fun equals(other: Any?): Boolean {
         return if (other is Path && length == other.length) {
+            if (initialPosition != initialPosition)
+                return false
             if (length == 0)
                 return true
             for (i in 0 until length)

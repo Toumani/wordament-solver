@@ -1,4 +1,4 @@
-package com.example
+package com.kst.wordamentresolver
 
 import com.jpro.webapi.JProApplication
 import javafx.stage.Stage

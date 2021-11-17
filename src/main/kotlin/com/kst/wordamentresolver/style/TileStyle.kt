@@ -1,4 +1,4 @@
-package com.example.style
+package com.kst.wordamentresolver.style
 
 import javafx.scene.paint.Color
 import javafx.scene.text.TextAlignment

@@ -1,4 +1,4 @@
-package com.example
+package com.kst.wordamentresolver
 
 import tornadofx.launch
 

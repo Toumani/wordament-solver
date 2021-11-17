@@ -1,4 +1,4 @@
-package com.example.view
+package com.kst.wordamentresolver.view
 
 import tornadofx.*
 

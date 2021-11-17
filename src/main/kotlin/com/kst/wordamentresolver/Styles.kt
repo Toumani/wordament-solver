@@ -1,4 +1,4 @@
-package com.example
+package com.kst.wordamentresolver
 
 import javafx.scene.text.FontWeight
 import tornadofx.*

@@ -1,10 +1,11 @@
-package com.example.view
+package com.kst.wordamentresolver.view
 
-import com.example.MyApp
-import com.example.model.Move
-import com.example.model.Path
-import com.example.model.Position
-import com.example.style.ResultStyle
+import com.kst.wordamentresolver.MyApp
+import com.kst.wordamentresolver.model.Move
+import com.kst.wordamentresolver.model.Path
+import com.kst.wordamentresolver.model.Position
+import com.kst.wordamentresolver.style.ResultStyle
+import javafx.concurrent.Task
 import javafx.geometry.Orientation
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.Priority
@@ -13,12 +14,31 @@ import tornadofx.*
 
 class ResultView : View() {
     val controller: ResultController by inject()
+    val boardController: BoardController by inject()
     val resultPane = flowpane { vgap = 40.0; prefWidth = 800.0 }
     override val root = vbox {
         hbox {
             button("Clear") { action { controller.clear() } }
             button("Randomize") { action { controller.randomize() } }
-            button("Resolve!") { action { controller.resolve() } }
+            button("Resolve!") {
+                action {
+                    runAsync {
+                        this@button.isDisable = true
+                        controller.resolve()
+                    } ui { words ->
+                        this@button.isDisable = false
+                        boardController.glowing = false
+                        val resultView = find<ResultView>()
+                        resultView.resultPane.clear()
+                        for (word in words.sorted()) {
+                            val text = Text(word)
+                            text.wrappingWidth = 200.0
+                            text.style { fill = c("#e6e6e6") }
+                            resultView.resultPane.add(text)
+                        }
+                    }
+                }
+            }
             spacing = 20.0
         }
         separator(Orientation.HORIZONTAL)
@@ -55,24 +75,17 @@ class ResultController : Controller() {
         board.randomize()
     }
 
-    fun resolve() {
-        println("Resolving!")
+    fun resolve(): Set<String> {
         val words = mutableSetOf<String>()
         for (i in 0 until NB_ROWS)
             for (j in 0 until NB_COLS)
                 words += findWordsFromStartingPosition(Position(j, i))
-        val resultView = find<ResultView>()
-        resultView.resultPane.clear()
-        for (word in words.sorted()) {
-            val text = Text(word)
-            text.wrappingWidth = 200.0
-            text.style { fill = c("#e6e6e6") }
-            resultView.resultPane.add(text)
-        }
+        return words
     }
 
     private fun findWordsFromStartingPosition(startingPosition: Position): Set<String> {
         val board = find<BoardView>()
+        val boardController = find<BoardController>()
 
         val words = mutableSetOf<String>()
         val visitedPaths = mutableListOf<Path>()
@@ -81,7 +94,7 @@ class ResultController : Controller() {
             val currentPosition = Position(startingPosition)
             val visitedPositions = mutableListOf<Position>()
             var word = board.getValue(startingPosition)
-            val currentPath = Path()
+            val currentPath = Path(startingPosition)
 
             do {
                 var moved = false
@@ -101,8 +114,17 @@ class ResultController : Controller() {
                         val nextWord = word + board.getValue(nextPosition)
                         val stringValidity = isStringValid(nextWord)
                         if (stringValidity.isValidWordStart) {
-                            if (stringValidity.isValidWord)
+                            if (stringValidity.isValidWord) {
                                 words += nextWord
+                                if (nextWord.length > 3) {
+                                    val task = object : Task<Unit>() {
+                                        override fun call() {
+                                            boardController.glowPath(currentPath.get(move))
+                                        }
+                                    }
+                                    Thread(task).start()
+                                }
+                            }
                             // move
                             moved = true
                             visitedPositions += Position(currentPosition)

@@ -1,6 +1,6 @@
-package com.example.view
+package com.kst.wordamentresolver.view
 
-import com.example.style.ResultStyle
+import com.kst.wordamentresolver.style.ResultStyle
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.*

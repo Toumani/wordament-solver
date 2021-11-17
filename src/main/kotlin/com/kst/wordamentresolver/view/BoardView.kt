@@ -1,8 +1,11 @@
-package com.example.view
+package com.kst.wordamentresolver.view
 
-import com.example.MyApp
-import com.example.model.Position
-import com.example.style.TileStyle
+import com.kst.wordamentresolver.MyApp
+import com.kst.wordamentresolver.model.Path
+import com.kst.wordamentresolver.model.Position
+import com.kst.wordamentresolver.style.TileStyle
+import javafx.animation.FadeTransition
+import javafx.animation.SequentialTransition
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.event.EventHandler
@@ -10,7 +13,9 @@ import javafx.geometry.Pos
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.StackPane
 import javafx.scene.text.Text
+import javafx.util.Duration
 import tornadofx.*
+import java.lang.Thread.sleep
 import kotlin.random.Random
 
 const val NB_ROWS = 4
@@ -64,6 +69,8 @@ class BoardView : View() {
         }
     }
 
+    fun getTile(position: Position) = boardData[position.y][position.x]
+
     fun getValue(position: Position) = boardData[position.y][position.x].getText()
     fun setValue(position: Position, value: String) = boardData[position.y][position.x].setText(value)
 }
@@ -115,5 +122,36 @@ class Tile : Fragment() {
     fun clear() {
         input.set("-")
         isEdit.set(true)
+    }
+
+    fun glow() {
+        val fadeOut = FadeTransition(Duration.millis(300.0), this.root)
+        fadeOut.fromValue = 1.0
+        fadeOut.toValue = 0.5
+        val fadeIn = FadeTransition(Duration.millis(500.0), this.root)
+        fadeIn.fromValue = 0.5
+        fadeIn.toValue = 1.0
+        val sequentialTransition = SequentialTransition(this.root, fadeOut, fadeIn)
+        sequentialTransition.play()
+    }
+}
+
+class BoardController : Controller() {
+    var glowing = false
+
+    fun glowPath(path: Path) {
+        if (!glowing) {
+            val board = find<BoardView>()
+            var position = path.initialPosition
+            glowing = true
+            board.getTile(position).glow()
+            for (move in path.moves) {
+                position = position.get(move)
+                sleep(150L)
+                board.getTile(position).glow()
+            }
+            sleep(1000L)
+            glowing = false
+        }
     }
 }

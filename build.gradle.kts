@@ -23,7 +23,7 @@ plugins {
     application
     id("org.openjfx.javafxplugin") version "0.0.10"
 }
-group = "com.test"
+group = "com.kst.wordamentresolver"
 version = "1.0-SNAPSHOT"
 
 val tornadofx_version: String by rootProject
@@ -40,7 +40,7 @@ javafx {
 }
 
 application {
-    mainClassName = "com.example.MainKt"
+    mainClassName = "com.kst.wordamentresolver.MainKt"
 }
 
 dependencies {

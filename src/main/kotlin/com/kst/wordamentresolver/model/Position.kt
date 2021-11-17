@@ -1,7 +1,7 @@
-package com.example.model
+package com.kst.wordamentresolver.model
 
-import com.example.view.NB_COLS
-import com.example.view.NB_ROWS
+import com.kst.wordamentresolver.view.NB_COLS
+import com.kst.wordamentresolver.view.NB_ROWS
 
 data class Position(var x: Int, var y: Int) {
     constructor(position: Position) : this(position.x, position.y)

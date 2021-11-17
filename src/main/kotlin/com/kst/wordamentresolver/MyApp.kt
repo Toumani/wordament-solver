@@ -1,8 +1,8 @@
-package com.example
+package com.kst.wordamentresolver
 
-import com.example.style.ResultStyle
-import com.example.style.TileStyle
-import com.example.view.MainView
+import com.kst.wordamentresolver.style.ResultStyle
+import com.kst.wordamentresolver.style.TileStyle
+import com.kst.wordamentresolver.view.MainView
 import javafx.scene.Scene
 import javafx.stage.Stage
 import tornadofx.App
