@@ -7,7 +7,7 @@ class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
 
-        val primaryColor = c("001a80")
+        val primaryColor = c("#001a80")
     }
 
     init {

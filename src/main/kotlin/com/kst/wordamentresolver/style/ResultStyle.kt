@@ -10,7 +10,7 @@ class ResultStyle : Stylesheet() {
         val viewport by cssclass()
         val thumb by cssclass()
         val scrollBar by cssclass("scroll-bar")
-
+        val progressBar by cssclass("progress-bar")
         val resultBackgroundColor = c("#1d1d1d")
     }
 
@@ -39,6 +39,15 @@ class ResultStyle : Stylesheet() {
                 Color.WHITE,
                 resultBackgroundColor,
             )
+        }
+        progressBar {
+            child(".track") {
+                backgroundColor += Color.BLACK
+            }
+            child(".bar") {
+                backgroundColor += Styles.primaryColor
+                backgroundInsets = multi(box(3.px))
+            }
         }
     }
 }

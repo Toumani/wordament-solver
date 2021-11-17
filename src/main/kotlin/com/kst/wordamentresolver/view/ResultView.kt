@@ -5,6 +5,9 @@ import com.kst.wordamentresolver.model.Move
 import com.kst.wordamentresolver.model.Path
 import com.kst.wordamentresolver.model.Position
 import com.kst.wordamentresolver.style.ResultStyle
+import javafx.beans.binding.Bindings
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
 import javafx.concurrent.Task
 import javafx.geometry.Orientation
 import javafx.scene.control.ScrollPane
@@ -13,54 +16,66 @@ import javafx.scene.text.Text
 import tornadofx.*
 
 class ResultView : View() {
+    val isResolving = SimpleBooleanProperty()
+    val nbResults = SimpleStringProperty()
+
     val controller: ResultController by inject()
     val boardController: BoardController by inject()
     val resultPane = flowpane { vgap = 40.0; prefWidth = 800.0 }
-    override val root = vbox {
-        hbox {
-            button("Clear") { action { controller.clear() } }
-            button("Randomize") { action { controller.randomize() } }
-            button("Resolve!") {
-                action {
-                    runAsync {
-                        this@button.isDisable = true
-                        controller.resolve()
-                    } ui { words ->
-                        this@button.isDisable = false
-                        boardController.glowing = false
-                        val resultView = find<ResultView>()
-                        resultView.resultPane.clear()
-                        for (word in words.sorted()) {
-                            val text = Text(word)
-                            text.wrappingWidth = 200.0
-                            text.style { fill = c("#e6e6e6") }
-                            resultView.resultPane.add(text)
+    val progress = progressbar(0.0) {
+        visibleProperty().bind(isResolving)
+    }
+
+
+    override val root = stackpane {
+        vbox {
+            hbox {
+                button("Clear") { action { controller.clear() } }
+                button("Randomize") { action { controller.randomize() } }
+                button(Bindings.`when`(isResolving).then("Resolving...").otherwise("Resolve!")) {
+                    disableProperty().bind(isResolving)
+                    action {
+                        runAsync {
+                            isResolving.set(true)
+                            controller.resolve()
+                        } ui { words ->
+                            isResolving.set(false)
+                            boardController.glowing = false
+                            resultPane.clear()
+                            nbResults.set(words.size.toString())
+                            for (word in words.sorted()) {
+                                val text = Text(word)
+                                text.wrappingWidth = 200.0
+                                text.style { fill = c("#e6e6e6") }
+                                resultPane.add(text)
+                            }
                         }
                     }
                 }
+                spacing = 20.0
+            }
+            separator(Orientation.HORIZONTAL)
+            label(Bindings.createStringBinding({ "Results (${if (nbResults.get().isEmpty()) "0" else nbResults.get()}):" })) {
+                style {
+                    fontSize = 28.px
+                    textFill = c("#f2f2f2")
+                }
+            }
+            scrollpane {
+                add(resultPane)
+                hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+                vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
+                vgrow = Priority.ALWAYS
+                style { backgroundColor += ResultStyle.resultBackgroundColor }
+
             }
             spacing = 20.0
-        }
-        separator(Orientation.HORIZONTAL)
-        label("Results:") {
-            style {
-                fontSize = 28.px
-                textFill = c("#f2f2f2")
-            }
-        }
-        scrollpane {
-            add(resultPane)
-            hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
-            vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
-            vgrow = Priority.ALWAYS
+            padding = insets(20)
+            prefWidth = 800.0
+
             style { backgroundColor += ResultStyle.resultBackgroundColor }
-
         }
-        spacing = 20.0
-        padding = insets(20)
-        prefWidth = 800.0
-
-        style { backgroundColor += ResultStyle.resultBackgroundColor }
+        add(progress)
     }
 }
 
@@ -76,10 +91,17 @@ class ResultController : Controller() {
     }
 
     fun resolve(): Set<String> {
+        val resultView = find<ResultView>()
         val words = mutableSetOf<String>()
+        val oneStepValue = 1.0 / (NB_COLS * NB_ROWS)
+        resultView.progress.progress = 0.0
+        var totalProgress = 0.0
         for (i in 0 until NB_ROWS)
-            for (j in 0 until NB_COLS)
+            for (j in 0 until NB_COLS) {
+                totalProgress += oneStepValue
+                resultView.progress.progressProperty().set(totalProgress)
                 words += findWordsFromStartingPosition(Position(j, i))
+            }
         return words
     }
 
