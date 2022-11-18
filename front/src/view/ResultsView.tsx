@@ -1,5 +1,8 @@
+import BoardData from "../model/BoardData";
+
 interface ResultsViewProps {
-	class?: string | undefined;
+	class?: string | undefined,
+	boardData: BoardData,
 }
 
 export function ResultsView(props: ResultsViewProps) {
@@ -8,7 +11,15 @@ export function ResultsView(props: ResultsViewProps) {
 			<div class="flex flex-row mx-8 pb-8 space-x-4 border-b-2 border-b-white">
 				<Button name="Clear" />
 				<Button name="Randomize" />
-				<Button name="Solve" />
+				<Button name="Solve" onClick={() => {
+					let s = '';
+					for (let i = 0; i < 4; i++) {
+						for (let j = 0; j < 4; j++)
+							s += props.boardData.boxes[4*i + j].value + ' '
+						s += '\n';
+					}
+					console.log(s);
+				} } />
 			</div>
 			<div class="flex flex-row flex-wrap justify-start w-full p-4">
 				<Word class="w-1/3" word="Word" />
@@ -25,11 +36,14 @@ export function ResultsView(props: ResultsViewProps) {
 }
 
 interface ButtonProps {
-	name: String
+	name: String,
+	onClick?: () => void,
 }
 
 function Button(props: ButtonProps) {
-	return <button class="p-4 rounded text-neutral-100 font-bold bg-indigo-900 hover:bg-indigo-800">
+	return <button class="p-4 rounded text-neutral-100 font-bold bg-indigo-900 hover:bg-indigo-800"
+		onClick={props.onClick}
+	>
 		{ `${props.name}` }
 	</button>
 }
