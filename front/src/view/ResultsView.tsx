@@ -20,7 +20,7 @@ export function ResultsView(props: ResultsViewProps) {
 					setCompleteBoardData(() => JSON.parse(JSON.stringify(props.boardData)))
 				} } />
 			</div>
-			<div class="flex flex-row flex-wrap justify-start w-full p-4">
+			<div class="flex flex-row flex-wrap justify-start w-full p-4 overflow-auto" style={{ 'max-height': 'calc(100% - 90px)' }}>
 				<Show when={!words.loading} fallback={<Spinner />}>
 					<For each={words()}>
 						{ word => <Word class="w-1/3" word={word} />}
