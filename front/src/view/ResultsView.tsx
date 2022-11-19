@@ -1,4 +1,6 @@
 import BoardData from "../model/BoardData";
+import {createResource, createSignal, For, Show} from "solid-js";
+import {postBoard} from "../fetchers";
 
 interface ResultsViewProps {
 	class?: string | undefined,
@@ -6,30 +8,24 @@ interface ResultsViewProps {
 }
 
 export function ResultsView(props: ResultsViewProps) {
+	const [completeBoardData, setCompleteBoardData] = createSignal(props.boardData);
+	const [words] = createResource<string[], BoardData>(completeBoardData, postBoard);
+
 	return (
 		<div class={`bg-neutral-800 ` + props.class}>
 			<div class="flex flex-row mx-8 pb-8 space-x-4 border-b-2 border-b-white">
 				<Button name="Clear" />
 				<Button name="Randomize" />
 				<Button name="Solve" onClick={() => {
-					let s = '';
-					for (let i = 0; i < 4; i++) {
-						for (let j = 0; j < 4; j++)
-							s += props.boardData.boxes[4*i + j].value + ' '
-						s += '\n';
-					}
-					console.log(s);
+					setCompleteBoardData(() => JSON.parse(JSON.stringify(props.boardData)))
 				} } />
 			</div>
 			<div class="flex flex-row flex-wrap justify-start w-full p-4">
-				<Word class="w-1/3" word="Word" />
-				<Word class="w-1/3" word="Word" />
-				<Word class="w-1/3" word="Word" />
-				<Word class="w-1/3" word="Word" />
-				<Word class="w-1/3" word="Word" />
-				<Word class="w-1/3" word="Word" />
-				<Word class="w-1/3" word="Word" />
-				<Word class="w-1/3" word="Word" />
+				<Show when={!words.loading} fallback={<Spinner />}>
+					<For each={words()}>
+						{ word => <Word class="w-1/3" word={word} />}
+					</For>
+				</Show>
 			</div>
 		</div>
 	)
@@ -57,4 +53,8 @@ function Word(props: WordProps) {
 	return (
 		<span class={`text-white text-center ${props.class}`}>{ `${props.word}` }</span>
 	)
+}
+
+function Spinner() {
+	return <span class="text-neutral-200">Loading...</span>
 }

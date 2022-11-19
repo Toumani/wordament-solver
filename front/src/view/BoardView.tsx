@@ -1,4 +1,4 @@
-import {createSignal, For} from "solid-js";
+import {createSignal, For, Show} from "solid-js";
 import BoardData from "../model/BoardData";
 import BoardBox from "../model/BoardBox";
 
@@ -27,15 +27,14 @@ function Tile(props: TileProps) {
 
 	return (
 		<div class="flex items-center justify-center w-1/4 text-white text-4xl uppercase bg-blue-900 border border-blue-500">
-			{ edit()
-				? <input
-						style={{ border: 'unset', background: 'unset', width: '4rem', "text-align": 'center' }}
-						value={props.box.value}
-						onChange={(e) => props.box.value = e.currentTarget.value}
-						onBlur={() => setEdit(false)}
+			<Show when={edit()} fallback={<span onClick={() => setEdit(!edit())}>{ props.box.value }</span>}>
+				<input
+					style={{ border: 'unset', background: 'unset', width: '4rem', "text-align": 'center' }}
+					value={props.box.value}
+					onChange={(e) => props.box.value = e.currentTarget.value}
+					onBlur={() => setEdit(!edit())}
 				/>
-				: <span onClick={() => setEdit(true)}>{ props.box.value }</span>
-			}
+			</Show>
 		</div>
 	)
 }
