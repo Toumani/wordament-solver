@@ -12,9 +12,9 @@ const App: Component = () => {
 	return (
 		<div class="flex flex-col w-full h-full">
 			<Header />
-			<div style={{ height: 'calc(100% - 76px)' }} class="flex flex-row grow">
-				<BoardView boardData={boardData()} class="w-1/2 h-full" />
-				<ResultsView boardData={boardData()} class="w-1/2 h-full" />
+			<div style={{ height: 'calc(100% - 76px)' }} class="flex flex-row flex-wrap grow">
+				<BoardView boardData={boardData()} class="w-full md:w-1/2 md:h-full" />
+				<ResultsView boardData={boardData()} class="w-full md:w-1/2 md:h-full" />
 			</div>
 		</div>
 	)

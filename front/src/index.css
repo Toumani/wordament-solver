@@ -24,3 +24,10 @@ code {
   width: 100vw;
   height: 100vh;
 }
+
+/* Complementary Tailwind classes */
+
+@media (min-width: 1024px) {
+  .lg\:w-128 { width: 32rem; }
+  .lg\:h-128 { height: 32rem; }
+}
