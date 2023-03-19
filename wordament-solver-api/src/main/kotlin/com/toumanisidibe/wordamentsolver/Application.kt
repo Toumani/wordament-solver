@@ -14,7 +14,9 @@ fun main() {
 }
 
 fun Application.module() {
-	configureCors()
+	val devMode = System.getenv("DEV")
+	if (devMode != null && devMode == "true")
+		configureCors()
 	configureSerialization()
 	configureRouting()
 }
