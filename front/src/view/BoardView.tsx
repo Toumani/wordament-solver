@@ -11,7 +11,7 @@ export function BoardView(props: BoardViewProps) {
 
 	return (
 		<div class={`flex items-center justify-center bg-neutral-700 ` + props.class}>
-			<div class="flex flex-wrap flex-row" style={{ width: '32rem', height: '32rem' }}>
+			<div class="flex flex-wrap flex-row w-96 h-96 lg:w-128 lg:h-128">
 				<For each={props.boardData.boxes}>{ (box) => <Tile box={box} /> }</For>
 			</div>
 		</div>
