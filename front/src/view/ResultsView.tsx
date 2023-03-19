@@ -1,30 +1,42 @@
 import BoardData from "../model/BoardData";
-import {createResource, createSignal, For, Show} from "solid-js";
-import {postBoard} from "../fetchers";
+import { createResource, createSignal, For, Show } from "solid-js";
+import { postBoard } from "../fetchers";
 
 interface ResultsViewProps {
 	class?: string | undefined,
 	boardData: BoardData,
+	clearBoard: () => void,
+	randomize: () => void,
 }
 
 export function ResultsView(props: ResultsViewProps) {
 	const [completeBoardData, setCompleteBoardData] = createSignal(props.boardData);
 	const [words] = createResource<string[], BoardData>(completeBoardData, postBoard);
+	const [synced, setSynced] = createSignal(true);
 
 	return (
 		<div class={`bg-neutral-800 ` + props.class}>
 			<div class="flex flex-row mx-8 py-8 md:pt-0 space-x-4 border-b-2 border-b-white">
-				<Button name="Clear" />
-				<Button name="Randomize" />
+				<Button name="Clear" onClick={() => {
+					props.clearBoard();
+					setSynced(() => false);
+				}} />
+				<Button name="Randomize" onClick={() => {
+					props.randomize();
+					setSynced(() => false);
+				}} />
 				<Button name="Solve" onClick={() => {
 					setCompleteBoardData(() => JSON.parse(JSON.stringify(props.boardData)))
+					setSynced(true)
 				} } />
 			</div>
 			<div class="flex flex-row flex-wrap justify-start w-full p-4 overflow-auto" style={{ 'max-height': 'calc(100% - 90px)' }}>
 				<Show when={!words.loading} fallback={<Spinner />}>
-					<For each={words()}>
-						{ word => <Word class="w-1/3" word={word} />}
-					</For>
+					<Show when={synced()}>
+						<For each={words()}>
+							{ word => <Word class="w-1/3" word={word} />}
+						</For>
+					</Show>
 				</Show>
 			</div>
 		</div>
