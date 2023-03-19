@@ -10,7 +10,7 @@ export async function postBoard(board: BoardData) {
 	if (isBoardEmpty)
 		return [] as string[];
 
-	const response = await fetch(import.meta.env.ENV ? 'http://localhost:8080/board' : '/board', {
+	const response = await fetch(import.meta.env.DEV ? 'http://localhost:8080/board' : '/board', {
 		method: 'POST',
 		headers: {'Content-Type': 'application/json'},
 		body: JSON.stringify(board)
